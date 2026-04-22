@@ -2,11 +2,13 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
+    // Instantiate socket, input, and output variables
     private Socket socket;
     private BufferedReader input;
     private PrintWriter output;
 
     public Client(String host, int port) {
+        // Try to connect to the server and set up input/output streams
         try {
             socket = new Socket(host, port);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -23,6 +25,7 @@ public class Client {
     }
 
     public void listenForUpdates() {
+        // Thread to listen for messages from the server
         Thread listener = new Thread(() -> {
             try {
                 String response;

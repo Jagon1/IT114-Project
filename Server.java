@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Server {
+public class Server{
     private ServerSocket serverSocket;
     private int timeLeft;
     private boolean roundActive;
@@ -10,12 +10,10 @@ public class Server {
     public Server(int port) {
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println("Server started on port " + port);
         } catch (IOException e) {
             System.out.println("Error starting server.");
             e.printStackTrace();
         }
-        
     }
 
     public void start() {
@@ -31,7 +29,7 @@ public class Server {
             // Add players to array of clients
             clients.add(new ClientConnection(clientSocket, input, output));
             output.println("Battle to Wordle!");
-
+            
             // Starts a countdown of 30 seconds to guess something
             startCountdown(30);
             new Thread(() -> {
@@ -97,8 +95,18 @@ public class Server {
             client.output.println(message);
         }
     }
-    public static void main(String[] args) {
+
+    public Socket accept() throws IOException {
+        return serverSocket.accept();
+    }
+
+    public static void main(String[] args) throws IOException {
         Server server = new Server(12345);
-        server.start();
+        while (true) {
+            Socket client = server.accept();
+            Thread t = new Thread(new
+            ClientHandler(client));
+            t.start();
+        }
     }
 }

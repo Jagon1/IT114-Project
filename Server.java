@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Server {
     private String secretWord;
+    private boolean roundIsActive = false;
     private ServerSocket serverSocket;
 
     // Store all connected clients
@@ -43,6 +44,18 @@ public class Server {
         secretWord = words[rand.nextInt(words.length)];
         System.out.println("DEBUG (server only): " + secretWord);
     }
+    public void restartGame() {
+        String[] words = {
+        "apple", "grape", "brick", "chair", "plant",
+        "stone", "flame", "crane", "blush", "storm"
+    };
+        Random rand = new Random();
+        secretWord = words[rand.nextInt(words.length)];
+        roundIsActive = true;
+        broadcast("NEW ROUND STARTED!");
+        broadcast("A new word has been chosen.");
+        System.out.println("DEBUG WORD (server only again): " + secretWord);
+    }
 
     // Send message to ALL players
     public void broadcast(String message) {
@@ -55,6 +68,7 @@ public class Server {
         if (guess.equalsIgnoreCase(secretWord)) {
             player.sendMessage("Correct! You win!");
             broadcast("A player has guessed the word!");
+            roundIsActive = false;
         } else {
             String feedback = guessFeedback(guess);
             player.sendMessage("Wrong guess: " + feedback);
@@ -77,5 +91,6 @@ public class Server {
         Server server = new Server(12345);
         server.startGame();
         server.start();
+        server.restartGame();
     }
 }

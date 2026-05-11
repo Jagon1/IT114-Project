@@ -55,10 +55,25 @@ public class Server {
     // Send message to ALL players
     public void broadcast(String message) {
         for (Clienthandler client : clients) {
-            client.sendMessage(message);
+            try {
+                client.sendMessage(message);
+            } catch (Exception e) {
+                System.out.println("Failed to send message.");
+            }
         }
     }
+
     public void handleGuess(Clienthandler player, String guess) {
+        guess = guess.trim().toLowerCase();
+        // Only 5 letters and only letters allowed
+        if (guess.length() != 5) {
+            player.sendMessage("Your guess must be exactly 5 letters!");
+            return;
+        }
+        if (!guess.matches("[a-zA-Z]+")) {
+            player.sendMessage("Only letters allowed!");
+            return;
+        }
         System.out.println("Guess received: " + guess);
         if (guess.equalsIgnoreCase(secretWord)) {
             player.sendMessage("Correct! You win!");

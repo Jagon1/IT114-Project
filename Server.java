@@ -27,10 +27,11 @@ public class Server {
                 System.out.println("Waiting for players...");
                 Socket socket = serverSocket.accept();
                 System.out.println("Player connected!");
-                Clienthandler clientHandler = new Clienthandler(socket, this); 
+                Clienthandler clientHandler = new Clienthandler(socket, this, "Player" + socket.getPort());
                 clients.add(clientHandler);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
+                broadcast(clientHandler.getUsername() + " joined the game!");
             } catch (IOException e) {
                 e.printStackTrace();
             }

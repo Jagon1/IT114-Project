@@ -6,9 +6,11 @@ public class Clienthandler implements Runnable {
     private Server server;
     private BufferedReader input;
     private PrintWriter output;
-    public Clienthandler(Socket socket, Server server) {
+    private String username;
+    public Clienthandler(Socket socket, Server server, String username) {
         this.socket = socket;
         this.server = server;
+        this.username = username;
         try {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new PrintWriter(socket.getOutputStream(), true);
@@ -16,7 +18,9 @@ public class Clienthandler implements Runnable {
             e.printStackTrace();
         }
     }
-
+    public String getUsername() {
+        return username;
+    }
     @Override
     public void run() {
         try {

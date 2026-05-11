@@ -24,13 +24,13 @@ public class Client {
         output.println(guess);
     }
 
-    public void listenForUpdates() {
+    public void listenForUpdates(GameGUI gui) {
         // Thread to listen for messages from the server
         Thread listener = new Thread(() -> {
             try {
                 String response;
                 while ((response = input.readLine()) != null) {
-                    System.out.println(response);
+                    gui.addMessage(response);
                 }
             } catch (IOException e) {
                 System.out.println("Disconnected from server.");

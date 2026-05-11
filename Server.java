@@ -5,6 +5,9 @@ import java.util.*;
 public class Server {
     private String secretWord;
     private ServerSocket serverSocket;
+    private int timeLeft;
+    private Thread timerThread;
+    private boolean roundIsActive;
 
     // Store all connected clients
     private List<Clienthandler> clients = new ArrayList<>();
@@ -40,10 +43,12 @@ public class Server {
         };
         Random rand = new Random();
         secretWord = words[rand.nextInt(words.length)];
+        roundIsActive = true;
         broadcast("NEW ROUND HAS STARTED!");
         broadcast("Guess the 5-letter word!");
         broadcast("ONLY USE 5 LETTER WORDS OR BE KICKED!");
         System.out.println("DEBUG WORD: " + secretWord);
+        startTimer(30);
     }
 
     // Send message to ALL players
@@ -57,6 +62,7 @@ public class Server {
         if (guess.equalsIgnoreCase(secretWord)) {
             player.sendMessage("Correct! You win!");
             broadcast("A player has guessed the word!");
+            roundIsActive = false;
             startNewRound();
         } else {
             String feedback = guessFeedback(guess);
@@ -75,6 +81,26 @@ public class Server {
         }
         return result.toString();
     }
+    public void startTimer(int seconds) {
+        timeLeft = seconds;
+        timerThread = new Thread(() -> {
+            while (timeLeft > 0 && roundIsActive) {
+                broadcast("TIME LEFT: " + timeLeft);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                timeLeft--;
+            }
+        if (timeLeft <= 0) {
+            broadcast("TIME IS UP!");
+            roundIsActive = false;
+            startNewRound();
+        }
+    });
+    timerThread.start();
+}
 
     public static void main(String[] args) {
         Server server = new Server(12345);

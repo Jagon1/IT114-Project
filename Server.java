@@ -50,16 +50,28 @@ public class Server {
             client.sendMessage(message);
         }
     }
-public void handleGuess(Clienthandler player, String guess) {
-    System.out.println("Guess received: " + guess);
-    if (guess.equalsIgnoreCase(secretWord)) {
-        player.sendMessage("Correct! You win!");
-        broadcast("A player has guessed the word!");
-    } else {
-        player.sendMessage("Wrong guess: " + guess);
+    public void handleGuess(Clienthandler player, String guess) {
+        System.out.println("Guess received: " + guess);
+        if (guess.equalsIgnoreCase(secretWord)) {
+            player.sendMessage("Correct! You win!");
+            broadcast("A player has guessed the word!");
+        } else {
+            String feedback = guessFeedback(guess);
+            player.sendMessage("Wrong guess: " + feedback);
+        }
+        broadcast("A player has made a guess!");
     }
-    broadcast("A player has made a guess!");
-}
+    private String guessFeedback(String guess) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            if (guess.charAt(i) == secretWord.charAt(i)) {
+                result.append("o");
+            } else {
+                result.append("x");
+            }
+        }
+        return result.toString();
+    }
 
     public static void main(String[] args) {
         Server server = new Server(12345);

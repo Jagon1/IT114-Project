@@ -99,14 +99,17 @@ public class Server {
         return result.toString();
     }
     public void startTimer(int seconds) {
+        if (timerThread != null && timerThread.isAlive()) {
+            timerThread.interrupt();
+        }
         timeLeft = seconds;
         timerThread = new Thread(() -> {
-            while (timeLeft > 0 && roundIsActive) {
+            while (timeLeft > 0 && roundIsActive && !Thread.currentThread().isInterrupted()) {
                 broadcast("TIME: " + timeLeft);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    return;
                 }
                 timeLeft--;
             }

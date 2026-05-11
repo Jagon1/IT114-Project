@@ -32,6 +32,7 @@ public class Server {
                 Thread thread = new Thread(clientHandler);
                 thread.start();
                 broadcast(clientHandler.getUsername() + " joined the game!");
+                updatePlayerList();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -116,7 +117,15 @@ public class Server {
         }
     });
     timerThread.start();
-}
+    }
+    public void updatePlayerList() {
+        StringBuilder players = new StringBuilder();
+        players.append("PLAYERS ");
+        for (Clienthandler client : clients) {
+            players.append(client.getUsername()).append(",");
+        }
+        broadcast(players.toString());
+    }
 
     public static void main(String[] args) {
         Server server = new Server(12345);

@@ -7,6 +7,7 @@ public class GameGUI extends JFrame {
     private JTextField guessField;
     private JButton submitButton;
     private JLabel timerLabel;
+    private JTextArea playerArea;
 
     public GameGUI() {
         // connect to server
@@ -26,12 +27,15 @@ public class GameGUI extends JFrame {
         gameArea.setEditable(false);
         add(new JScrollPane(gameArea), BorderLayout.CENTER);
 
-        // Timer on the right side
+        // Timer on the right side and Player list below it
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
         timerLabel = new JLabel("Timer: 30");
         timerLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        rightPanel.add(timerLabel);
+        rightPanel.add(timerLabel, BorderLayout.NORTH);
+        playerArea = new JTextArea(10, 10);
+        playerArea.setEditable(false);
+        rightPanel.add(new JScrollPane(playerArea), BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
 
         // The input field and submit button
@@ -61,6 +65,13 @@ public class GameGUI extends JFrame {
             String time = message.substring(5).trim();
             SwingUtilities.invokeLater(() -> {
                 timerLabel.setText("Timer: " + time);
+            });
+            return;
+        }
+        if (message.startsWith("PLAYERS ")) {
+            String players = message.substring(8).trim();
+            SwingUtilities.invokeLater(() -> {
+                playerArea.setText("Players:\n" + players.replace(",", "\n"));
             });
             return;
         }

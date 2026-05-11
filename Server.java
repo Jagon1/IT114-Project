@@ -3,7 +3,7 @@ import java.net.*;
 import java.util.*;
 
 public class Server {
-
+    private String secretWord;
     private ServerSocket serverSocket;
 
     // Store all connected clients
@@ -33,6 +33,16 @@ public class Server {
             }
         }
     }
+    public void startGame() {
+        String[] words = {
+            "apple", "grape", "brick", "chair", "plant",
+            "stone", "flame", "crane", "blush", "storm"
+        };
+
+        Random rand = new Random();
+        secretWord = words[rand.nextInt(words.length)];
+        System.out.println("DEBUG (server only): " + secretWord);
+    }
 
     // Send message to ALL players
     public void broadcast(String message) {
@@ -40,9 +50,20 @@ public class Server {
             client.sendMessage(message);
         }
     }
+public void handleGuess(Clienthandler player, String guess) {
+    System.out.println("Guess received: " + guess);
+    if (guess.equalsIgnoreCase(secretWord)) {
+        player.sendMessage("Correct! You win!");
+        broadcast("A player has guessed the word!");
+    } else {
+        player.sendMessage("Wrong guess: " + guess);
+    }
+    broadcast("A player has made a guess!");
+}
 
     public static void main(String[] args) {
         Server server = new Server(12345);
+        server.startGame();
         server.start();
     }
 }

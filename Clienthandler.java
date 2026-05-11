@@ -24,6 +24,7 @@ public class Clienthandler implements Runnable {
             String message;
             while ((message = input.readLine()) != null) {
                 System.out.println("Player guessed: " + message);
+                server.handleGuess(this, message);
             }
         } catch (IOException e) {
             System.out.println("Client disconnected.");

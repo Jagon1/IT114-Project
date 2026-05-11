@@ -86,7 +86,7 @@ public class Server {
         timeLeft = seconds;
         timerThread = new Thread(() -> {
             while (timeLeft > 0 && roundIsActive) {
-                broadcast("TIME LEFT: " + timeLeft);
+                broadcast("TIME: " + timeLeft);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

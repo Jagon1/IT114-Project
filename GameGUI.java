@@ -6,6 +6,7 @@ public class GameGUI extends JFrame {
     private JTextArea gameArea;
     private JTextField guessField;
     private JButton submitButton;
+    private JLabel timerLabel;
 
     public GameGUI() {
         // connect to server
@@ -24,6 +25,14 @@ public class GameGUI extends JFrame {
         gameArea = new JTextArea();
         gameArea.setEditable(false);
         add(new JScrollPane(gameArea), BorderLayout.CENTER);
+
+        // Timer on the right side
+        timerLabel = new JLabel("Timer: 30");
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        rightPanel.add(timerLabel);
+        add(rightPanel, BorderLayout.EAST);
 
         // The input field and submit button
         JPanel bottomPanel = new JPanel();
@@ -48,6 +57,13 @@ public class GameGUI extends JFrame {
 
     // Adds the server messages to the game area
     public void addMessage(String message) {
-        gameArea.append(message + "\n");
-    }
+        if (message.startsWith("TIME:")) {
+            String time = message.substring(5).trim();
+            SwingUtilities.invokeLater(() -> {
+                timerLabel.setText("Timer: " + time);
+            });
+            return;
+        }
+    gameArea.append(message + "\n");
+}
 }

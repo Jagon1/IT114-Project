@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Server {
     private String secretWord;
-    private boolean roundIsActive = false;
     private ServerSocket serverSocket;
 
     // Store all connected clients
@@ -34,27 +33,17 @@ public class Server {
             }
         }
     }
-    public void startGame() {
+    public void startNewRound() {
         String[] words = {
             "apple", "grape", "brick", "chair", "plant",
             "stone", "flame", "crane", "blush", "storm"
         };
-
         Random rand = new Random();
         secretWord = words[rand.nextInt(words.length)];
-        System.out.println("DEBUG (server only): " + secretWord);
-    }
-    public void restartGame() {
-        String[] words = {
-        "apple", "grape", "brick", "chair", "plant",
-        "stone", "flame", "crane", "blush", "storm"
-    };
-        Random rand = new Random();
-        secretWord = words[rand.nextInt(words.length)];
-        roundIsActive = true;
-        broadcast("NEW ROUND STARTED!");
-        broadcast("A new word has been chosen.");
-        System.out.println("DEBUG WORD (server only again): " + secretWord);
+        broadcast("NEW ROUND HAS STARTED!");
+        broadcast("Guess the 5-letter word!");
+        broadcast("ONLY USE 5 LETTER WORDS OR BE KICKED!");
+        System.out.println("DEBUG WORD: " + secretWord);
     }
 
     // Send message to ALL players
@@ -68,7 +57,7 @@ public class Server {
         if (guess.equalsIgnoreCase(secretWord)) {
             player.sendMessage("Correct! You win!");
             broadcast("A player has guessed the word!");
-            roundIsActive = false;
+            startNewRound();
         } else {
             String feedback = guessFeedback(guess);
             player.sendMessage("Wrong guess: " + feedback);
@@ -89,8 +78,7 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server(12345);
-        server.startGame();
+        server.startNewRound();
         server.start();
-        server.restartGame();
     }
 }

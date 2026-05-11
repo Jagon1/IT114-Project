@@ -1,12 +1,12 @@
 import java.io.*;
 import java.net.*;
 
-class ClientHandler implements Runnable {
+public class Clienthandler implements Runnable {
     private Socket socket;
     private Server server;
     private BufferedReader input;
     private PrintWriter output;
-    ClientHandler(Socket socket, Server server) {
+    public Clienthandler(Socket socket, Server server) {
         this.socket = socket;
         this.server = server;
         try {
@@ -24,8 +24,6 @@ class ClientHandler implements Runnable {
             String message;
             while ((message = input.readLine()) != null) {
                 System.out.println("Player guessed: " + message);
-                // Broadcast to everyone
-                server.broadcast("Player guessed: " + message);
             }
         } catch (IOException e) {
             System.out.println("Client disconnected.");
